@@ -1,34 +1,69 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ContactForm } from '../ContactForm/ContactForm';
-import { ContactList } from '../ContactList/ContactList';
-import { SearchBox } from '../SearchBox/SearchBox';
-import { fetchContacts } from '../../redux/contactsOps';
-import { selectError, selectLoading } from '../../redux/contactsSlice';
-import './App.css';
+import { useEffect, lazy, Suspense } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
+import Layout from "../Layout/Layout.jsx";
+import PrivateRoute from "../PrivateRoute";
+import RestrictedRoute from "../RestrictedRoute";
+import { refreshUserThunk } from "../../redux/auth/operations";
+import { selectIsRefreshing } from "../../redux/auth/selectors";
 
-function App() {
+const HomePage = lazy(() => import("../../pages/HomePage/HomePage"));
+const RegistrationPage = lazy(() =>
+  import("../../pages/RegistrationPage/RegistrationPage.jsx")
+);
+const LoginPage = lazy(() => import("../../pages/LoginPage/LoginPage"));
+const ContactsPage = lazy(() =>
+  import("../../pages/ContactsPage/ContactsPage")
+);
+
+export const App = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const isRefreshing = useSelector(selectIsRefreshing);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUserThunk());
   }, [dispatch]);
 
-  return (
-    <div className="container">
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <h2>Contacts</h2>
-      <SearchBox />
-      
-      {isLoading && <div className="loading">Loading contacts...</div>}
-      {error && <div className="error">Error: {error}</div>}
-      
-      <ContactList />
-    </div>
+  return isRefreshing ? null : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        
+        <Route
+          path="/register"
+          element={
+            <RestrictedRoute>
+              <Suspense fallback={<div>Loading...</div>}>
+                <RegistrationPage />
+              </Suspense>
+            </RestrictedRoute>
+          }
+        />
+        
+        <Route
+          path="/login"
+          element={
+            <RestrictedRoute>
+              <Suspense fallback={<div>Loading...</div>}>
+                <LoginPage />
+              </Suspense>
+            </RestrictedRoute>
+          }
+        />
+        
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute>
+              <Suspense fallback={<div>Loading...</div>}>
+                <ContactsPage />
+              </Suspense>
+            </PrivateRoute>
+          }
+        />
+      </Route>
+    </Routes>
   );
-}
+};
 
 export default App;

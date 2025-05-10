@@ -1,7 +1,7 @@
-import { useDispatch } from 'react-redux';
-import { FaUser, FaPhone } from 'react-icons/fa';
-import { deleteContact } from '../../redux/contactsOps';
-import s from './Contact.module.css';
+import { useDispatch } from "react-redux";
+import { FaUser, FaPhone } from "react-icons/fa";
+import { deleteContact } from "../../redux/contacts/operations";
+import s from "./Contact.module.css";
 
 export const Contact = ({ id, name, number }) => {
   const dispatch = useDispatch();
@@ -22,11 +22,7 @@ export const Contact = ({ id, name, number }) => {
           <span className={s.contactNumber}>{number}</span>
         </div>
       </div>
-      <button
-        type="button"
-        className={s.deleteBtn}
-        onClick={handleDelete}
-      >
+      <button type="button" className={s.deleteBtn} onClick={handleDelete}>
         Delete
       </button>
     </div>

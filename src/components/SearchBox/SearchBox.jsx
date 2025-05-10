@@ -1,14 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setNameFilter } from '../../redux/filtersSlice';
-import { selectNameFilter } from '../../redux/filtersSlice';
-import s from './SearchBox.module.css';
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "../../redux/filters/slice";
+import { selectFilter } from "../../redux/filters/selectors";
+import s from "./SearchBox.module.css";
 
 export const SearchBox = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(selectNameFilter);
+  const filter = useSelector(selectFilter);
 
-  const handleChange = e => {
-    dispatch(setNameFilter(e.target.value));
+  const handleChange = (e) => {
+    dispatch(setFilter(e.target.value));
   };
 
   return (
@@ -27,3 +27,5 @@ export const SearchBox = () => {
     </div>
   );
 };
+
+export default SearchBox;

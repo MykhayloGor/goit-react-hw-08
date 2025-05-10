@@ -1,0 +1,29 @@
+.nav {
+    display: flex;
+    align-items: center;
+  }
+  
+  .link {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #2a2a2a;
+    font-weight: 500;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    transition: all 0.2s ease-in-out;
+    margin-right: 10px;
+  }
+  
+  .link:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .active {
+    background-color: #1976d2;
+    color: white;
+  }
+  
+  .active:hover {
+    background-color: #1565c0;
+  }

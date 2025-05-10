@@ -1,20 +1,28 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contactsOps';
-import { selectContacts } from '../../redux/contactsSlice';
-import s from './ContactForm.module.css';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addContact } from "../../redux/contacts/operations";
+import { selectContacts } from "../../redux/contacts/selectors"; 
+import s from "./ContactForm.module.css";
 
 export const ContactForm = () => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-
-  const handleSubmit = e => {
+  const contacts = useSelector(selectContacts) || [];
+  
+  const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!Array.isArray(contacts)) {
+      console.error('Contacts is not an array:', contacts);
+      dispatch(addContact({ name, number }));
+      setName("");
+      setNumber("");
+      return;
+    }
 
     const isDuplicate = contacts.some(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
+      (contact) => contact.name.toLowerCase() === name.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -23,8 +31,8 @@ export const ContactForm = () => {
     }
 
     dispatch(addContact({ name, number }));
-    setName('');
-    setNumber('');
+    setName("");
+    setNumber("");
   };
 
   return (
@@ -38,9 +46,9 @@ export const ContactForm = () => {
           name="name"
           id="name"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           className={s.input}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          pattern="[a-zA-Z\s\-']+"
           title="Name may contain only letters, apostrophe, dash and spaces."
           required
         />
@@ -54,9 +62,9 @@ export const ContactForm = () => {
           name="number"
           id="number"
           value={number}
-          onChange={e => setNumber(e.target.value)}
+          onChange={(e) => setNumber(e.target.value)}
           className={s.input}
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          pattern="[0-9\+\-\.\(\)\s]+"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
         />
