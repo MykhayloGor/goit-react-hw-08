@@ -50,7 +50,7 @@ const LoginForm = () => {
                     {" "}
                     <Link to="/register" className={s.signUpLink}>
                       {" "}
-                      You don't have account? Sign UP!
+                      You don't have account? Sign Up!
                     </Link>
                   </div>
                   <button type="submit" className={s.submitButton}>
